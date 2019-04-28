@@ -1,0 +1,84 @@
+canvas {
+    width: 640px;
+    height: 480px;
+    margin: 20px auto;
+    display: block;
+    border: 1px solid #ddd;
+    box-shadow: 0px 0px 5px #ccc;
+}
+
+html,
+input {
+    font-size: 16pt;
+}
+
+#brush_width {
+    margin-top: 30%;
+    margin-left: 14%;
+    width: 72%;
+}
+
+.center {
+    margin: auto;
+    float: left;
+}
+
+* {
+    box-sizing: border-box;
+}
+
+label {
+    display: inline-block;
+    position: relative;
+    width: 150px;
+    height: 150px;
+    cursor: pointer;
+    overflow: hidden;
+}
+
+input[type="color"] {
+    -webkit-appearance: none;
+    border: none;
+    background: #fff;
+    width: 150px;
+    height: 150px;
+    border-radius: 50%;
+    overflow: hidden;
+    outline: none;
+    cursor: inherit;
+}
+
+.circle {
+
+    position: absolute;
+    left: 30px;
+    top: 30px;
+    width: 90px;
+    height: 90px;
+    background-color: white;
+    border-radius: 50%;
+    cursor: inherit;
+}
+
+/* -webkit */
+input[type="color"]::-webkit-color-swatch-wrapper {
+    padding: 0;
+}
+
+input[type="color"]::-webkit-color-swatch {
+    border: none;
+    border-radius: 50%;
+}
+
+/* firefox */
+input[type=color]::-moz-focus-inner {
+    border: none;
+    padding: 0;
+    border-radius: 50%;
+}
+
+input[type=color]::-moz-color-swatch {
+    border: none;
+    border-radius: 50%;
+    height: 140px;
+}
