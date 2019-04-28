@@ -18,6 +18,10 @@ app.get('/',urlencodedParser, (req, res) => {
     res.sendFile(path.join(__dirname, 'public', 'views', 'index.html'));
 });
 
+app.get('/paper-full', (req, res) =>{
+    res.sendFile(path.join(__dirname, 'public', 'views', 'paper.js'));
+});
+
 app.get('/client.js', (req, res) => {
     res.sendFile(path.join(__dirname), 'public', 'js', 'client.js');
 });
@@ -39,6 +43,22 @@ io.on('connection', (socket)=>{
     //     //генерируем событие и отправляем доступным клиентам
     //     io.sockets.emit('', data);
     // });
+
+
+    socket.on ('startPath', (data, sessionID)=>{
+        io.sockets.emit( 'startPath', data, sessionID );
+      //  console.log('startPathEmitted')
+    });
+
+    socket.on ('continuePath', (data, sessionID)=>{
+        io.sockets.emit( 'continuePath', data, sessionID );
+       // console.log('continuePatch emitted')
+    });
+
+    socket.on ('endPath', (data, sessionID)=>{
+        io.sockets.emit( 'endPath', data, sessionID );
+      //  console.log('endPatch emitted')
+    });
 });
 
 
