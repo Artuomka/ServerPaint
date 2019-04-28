@@ -22,6 +22,7 @@ window.onload = () => {
         }
         context.lineWidth =
             context.strokeStyle = widthLine;
+        context.strokeStyle = document.getElementById("color_selector").value;
         painting = true;
         x        = e.offsetX;
         y        = e.offsetY;
