@@ -10,16 +10,12 @@ const port             = 80;
 const urlencodedParser = bodyParser.urlencoded({extended: false});
 
 const connections = []; //users connections array
-
+let img;
 
 app.use('/static', express.static('public'));
 
-app.get('/',urlencodedParser, (req, res) => {
+app.get('/', urlencodedParser, (req, res) => {
     res.sendFile(path.join(__dirname, 'public', 'views', 'index.html'));
-});
-
-app.get('/paper-full', (req, res) =>{
-    res.sendFile(path.join(__dirname, 'public', 'views', 'paper.js'));
 });
 
 app.get('/client.js', (req, res) => {
@@ -30,11 +26,15 @@ app.get('/client.css', (req, res) => {
     res.sendFile(path.join(__dirname), 'public', 'css', 'client.css');
 });
 
-io.on('connection', (socket)=>{
+// app.get('/getImage', (req, res) => {
+//     connections.indexOf(socket).emit('giveImage');
+// });
+
+io.on('connection', (socket) => {
     connections.push(socket);
     console.log('Connected: %s sockets connected', connections.length);
 
-    socket.on('disconnect', (data)=>{
+    socket.on('disconnect', () => {
         connections.splice(connections.indexOf(socket), 1);
         console.log('Disconnected: %s sockets connected', connections.length);
     });
@@ -45,23 +45,23 @@ io.on('connection', (socket)=>{
     // });
 
 
-    socket.on ('startPath', (data, sessionID)=>{
-        io.sockets.emit( 'startPath', data, sessionID );
-      //  console.log('startPathEmitted')
+    socket.on('startPath', (data, sessionID) => {
+        io.sockets.emit('startPath', data, sessionID);
+        //  console.log('startPathEmitted')
     });
 
-    socket.on ('continuePath', (data, sessionID)=>{
-        io.sockets.emit( 'continuePath', data, sessionID );
-       // console.log('continuePatch emitted')
+    socket.on('continuePath', (data, sessionID) => {
+        io.sockets.emit('continuePath', data, sessionID);
+        // console.log('continuePatch emitted')
     });
 
-    socket.on ('endPath', (data, sessionID)=>{
-        io.sockets.emit( 'endPath', data, sessionID );
-      //  console.log('endPatch emitted')
+    socket.on('endPath', (data, sessionID) => {
+        io.sockets.emit('endPath', data, sessionID);
+        //  console.log('endPatch emitted')
     });
 });
 
 
-server.listen(port, ()=>{
-    console.log ('Server running on port ' +port);
+server.listen(port, () => {
+    console.log('Server running on port ' + port);
 });

@@ -35,11 +35,24 @@ window.onload = () => {
     socket.on('connect', () => {
         console.log('connected');
         sessionID = socket.io.engine.id;
-        alert(sessionID);
+    //    getImage();
+     //   alert(sessionID);
     });
 
     function emit(event, data) {
         socket.emit(event, data, sessionID)
+    }
+
+    function getImage() {
+        let img;
+        let sender = new XMLHttpRequest();
+        sender.open('GET', 'getImage', true);
+        //sender.setRequestHeader('Content-Type', 'application/x-www-form-urlencoded');
+        sender.send();
+        img = sender.responseText;
+        img = atob(img);
+        let newImage = new Image(img);
+        context.drawImage(newImage, 0, 0);
     }
 
     canvas.onmousedown = (e) => {
@@ -99,17 +112,13 @@ window.onload = () => {
     };
 
 
-    function hello() {
-        alert("Hello");
-    }
-
     socket.on('startPath', function startPath(point, sessionID) {
-        context.lineJoin    = "round";
+        context.lineJoin = "round";
         context.beginPath();
         context.lineWidth   = point.width;
         context.strokeStyle = point.color;
         context.moveTo(point.x, point.y);
-      //  console.log('startPatch Emitted');
+        //  console.log('startPatch Emitted');
     });
 
     socket.on('continuePath', function continuePath(point, sessionID) {
@@ -117,12 +126,17 @@ window.onload = () => {
         context.closePath();
         context.stroke();
         context.moveTo(point.x, point.y);
-       // console.log('ContinuePatch Emitted');
+        // console.log('ContinuePatch Emitted');
     });
 
     socket.on('endPath', function endPath(point, sessionID) {
-       // console.log('endPatch Emitted');
+        // console.log('endPatch Emitted');
     });
+
+    // socket.on('giveImage', function () {
+    //     let img = canvas.toDataURL();
+    //     emit('giveImage', img);
+    // });
 
 
 };
