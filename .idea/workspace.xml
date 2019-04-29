@@ -3,8 +3,6 @@
   <component name="ChangeListManager">
     <list default="true" id="f9254ab2-ba56-4abe-a10f-9460ce7f3774" name="Default" comment="">
       <change beforePath="$PROJECT_DIR$/.idea/workspace.xml" beforeDir="false" afterPath="$PROJECT_DIR$/.idea/workspace.xml" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/src/index.js" beforeDir="false" afterPath="$PROJECT_DIR$/src/index.js" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/src/public/js/client.js" beforeDir="false" afterPath="$PROJECT_DIR$/src/public/js/client.js" afterDir="false" />
     </list>
     <ignored path="$PROJECT_DIR$/.tmp/" />
     <ignored path="$PROJECT_DIR$/temp/" />
@@ -33,10 +31,10 @@
       <file leaf-file-name="client.js" pinned="false" current-in-tab="true">
         <entry file="file://$PROJECT_DIR$/src/public/js/client.js">
           <provider selected="true" editor-type-id="text-editor">
-            <state relative-caret-position="200">
-              <caret line="134" lean-forward="true" selection-start-line="134" selection-end-line="134" />
+            <state relative-caret-position="160">
+              <caret line="137" column="36" lean-forward="true" selection-start-line="136" selection-start-column="6" selection-end-line="137" selection-end-column="36" />
               <folding>
-                <marker date="1556532166089" expanded="true" signature="1532:2249" ph="..." />
+                <marker date="1556532686750" expanded="true" signature="1532:2249" ph="..." />
               </folding>
             </state>
           </provider>
@@ -205,7 +203,7 @@
       <workItem from="1556129144252" duration="6096000" />
       <workItem from="1556205151763" duration="7236000" />
       <workItem from="1556447439046" duration="25171000" />
-      <workItem from="1556520380236" duration="10568000" />
+      <workItem from="1556520380236" duration="11086000" />
     </task>
     <task id="LOCAL-00001" summary="added line color">
       <created>1556452959798</created>
@@ -228,11 +226,18 @@
       <option name="project" value="LOCAL" />
       <updated>1556476436154</updated>
     </task>
-    <option name="localTasksCounter" value="4" />
+    <task id="LOCAL-00004" summary="added load image whe connect">
+      <created>1556532206239</created>
+      <option name="number" value="00004" />
+      <option name="presentableId" value="LOCAL-00004" />
+      <option name="project" value="LOCAL" />
+      <updated>1556532206239</updated>
+    </task>
+    <option name="localTasksCounter" value="5" />
     <servers />
   </component>
   <component name="TimeTrackingManager">
-    <option name="totallyTimeSpent" value="49071000" />
+    <option name="totallyTimeSpent" value="49589000" />
   </component>
   <component name="TodoView">
     <todo-panel id="selected-file">
@@ -277,7 +282,8 @@
     <MESSAGE value="added line color" />
     <MESSAGE value="working first tier" />
     <MESSAGE value="working first tier 01" />
-    <option name="LAST_COMMIT_MESSAGE" value="working first tier 01" />
+    <MESSAGE value="added load image whe connect" />
+    <option name="LAST_COMMIT_MESSAGE" value="added load image whe connect" />
   </component>
   <component name="XDebuggerManager">
     <breakpoint-manager>
@@ -320,7 +326,7 @@
         <state relative-caret-position="100">
           <caret line="5" lean-forward="true" selection-start-line="5" selection-end-line="5" />
           <folding>
-            <marker date="1556532166089" expanded="true" signature="1532:2249" ph="..." />
+            <marker date="1556532686750" expanded="true" signature="1532:2249" ph="..." />
           </folding>
         </state>
       </provider>
@@ -337,7 +343,7 @@
         <state relative-caret-position="900">
           <caret line="45" lean-forward="true" selection-start-line="45" selection-end-line="45" />
           <folding>
-            <marker date="1556532166089" expanded="true" signature="1532:2249" ph="..." />
+            <marker date="1556532686750" expanded="true" signature="1532:2249" ph="..." />
           </folding>
         </state>
       </provider>
@@ -460,10 +466,10 @@
     </entry>
     <entry file="file://$PROJECT_DIR$/src/public/js/client.js">
       <provider selected="true" editor-type-id="text-editor">
-        <state relative-caret-position="200">
-          <caret line="134" lean-forward="true" selection-start-line="134" selection-end-line="134" />
+        <state relative-caret-position="160">
+          <caret line="137" column="36" lean-forward="true" selection-start-line="136" selection-start-column="6" selection-end-line="137" selection-end-column="36" />
           <folding>
-            <marker date="1556532166089" expanded="true" signature="1532:2249" ph="..." />
+            <marker date="1556532686750" expanded="true" signature="1532:2249" ph="..." />
           </folding>
         </state>
       </provider>

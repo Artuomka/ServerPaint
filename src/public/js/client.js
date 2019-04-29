@@ -134,8 +134,8 @@ window.onload = () => {
     });
 
     socket.on('drawPoints', function drawPoints(pointsArray) {
-        console.log('DrawPoints emitted');
-        console.log(pointsArray);
+        // console.log('DrawPoints emitted');
+        // console.log(pointsArray);
 
         for (let i = 0; i < pointsArray.length; i++) {
             context.lineJoin = "round";
