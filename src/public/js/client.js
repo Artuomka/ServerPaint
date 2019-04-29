@@ -35,8 +35,8 @@ window.onload = () => {
     socket.on('connect', () => {
         console.log('connected');
         sessionID = socket.io.engine.id;
-    //    getImage();
-     //   alert(sessionID);
+        //    getImage();
+        //   alert(sessionID);
     });
 
     function emit(event, data) {
@@ -49,8 +49,8 @@ window.onload = () => {
         sender.open('GET', 'getImage', true);
         //sender.setRequestHeader('Content-Type', 'application/x-www-form-urlencoded');
         sender.send();
-        img = sender.responseText;
-        img = atob(img);
+        img          = sender.responseText;
+        img          = atob(img);
         let newImage = new Image(img);
         context.drawImage(newImage, 0, 0);
     }
@@ -133,10 +133,23 @@ window.onload = () => {
         // console.log('endPatch Emitted');
     });
 
-    // socket.on('giveImage', function () {
-    //     let img = canvas.toDataURL();
-    //     emit('giveImage', img);
-    // });
+    socket.on('drawPoints', function drawPoints(pointsArray) {
+        console.log('DrawPoints emitted');
+        console.log(pointsArray);
+
+        for (let i = 0; i < pointsArray.length; i++) {
+            context.lineJoin = "round";
+            context.beginPath();
+            context.lineWidth   = pointsArray[i].width;
+            context.strokeStyle = pointsArray[i].color;
+            context.moveTo(pointsArray[i].beginPointX, pointsArray[i].beginPointY);
+            context.lineTo(pointsArray[i].endPointX, pointsArray[i].endPointY);
+            context.closePath();
+            context.stroke();
+     //       context.moveTo(pointsArray[i].endPointX, pointsArray[i].endPointY);
+        }
+
+    });
 
 
 };

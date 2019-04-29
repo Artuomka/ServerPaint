@@ -10,6 +10,20 @@ const port             = 80;
 const urlencodedParser = bodyParser.urlencoded({extended: false});
 
 const connections = []; //users connections array
+const pathsArray  = []; //users drawed curves array
+const pointsArray = []; //recieved points array;
+
+class Path {
+    constructor(beginPointX, beginPointY, endPointX, endPointY, color, width) {
+        this.beginPointX = beginPointX;
+        this.beginPointY = beginPointY;
+        this.endPointX   = endPointX;
+        this.endPointY   = endPointY;
+        this.color       = color;
+        this.width       = width;
+    }
+}
+
 let img;
 
 app.use('/static', express.static('public'));
@@ -31,6 +45,12 @@ app.get('/client.css', (req, res) => {
 // });
 
 io.on('connection', (socket) => {
+    let beginPoint; //variables for
+    let endPoint;   //recieved points
+    let firstPoint;
+    let secondPoint;
+
+    socket.emit('drawPoints', pathsArray);
     connections.push(socket);
     console.log('Connected: %s sockets connected', connections.length);
 
@@ -47,11 +67,18 @@ io.on('connection', (socket) => {
 
     socket.on('startPath', (data, sessionID) => {
         io.sockets.emit('startPath', data, sessionID);
+        beginPoint = data;
+        pointsArray.push(beginPoint);
+        firstPoint = beginPoint;
         //  console.log('startPathEmitted')
     });
 
     socket.on('continuePath', (data, sessionID) => {
         io.sockets.emit('continuePath', data, sessionID);
+        endPoint = data;
+        pointsArray.push(endPoint);
+        createPath(firstPoint.x, firstPoint.y, endPoint.x, endPoint.y, firstPoint.color, firstPoint.width );
+        firstPoint = endPoint;
         // console.log('continuePatch emitted')
     });
 
@@ -61,6 +88,10 @@ io.on('connection', (socket) => {
     });
 });
 
+function createPath(beginPointX, beginPointY, endPointX, endPointY, beginPointColor, beginPointWidth){
+    let newPath = new Path(beginPointX, beginPointY, endPointX, endPointY, beginPointColor, beginPointWidth);
+    pathsArray.push(newPath);
+}
 
 server.listen(port, () => {
     console.log('Server running on port ' + port);
