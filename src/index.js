@@ -28,9 +28,14 @@ let img;
 
 app.use('/static', express.static('public'));
 
-app.get('/', urlencodedParser, (req, res) => {
+// app.get('/', urlencodedParser, (req, res) => {
+//     res.sendFile(path.join(__dirname, 'public', 'views', 'index.html'));
+// });
+
+app.get('/painting', urlencodedParser, (req, res) => {
     res.sendFile(path.join(__dirname, 'public', 'views', 'index.html'));
 });
+
 
 app.get('/client.js', (req, res) => {
     res.sendFile(path.join(__dirname), 'public', 'js', 'client.js');
@@ -40,59 +45,219 @@ app.get('/client.css', (req, res) => {
     res.sendFile(path.join(__dirname), 'public', 'css', 'client.css');
 });
 
+
+app.get('/', urlencodedParser, (req, res) => {
+    res.sendFile(path.join(__dirname, 'public', 'views', 'intro.html'));
+});
+
+
+app.get('/intro.js', (req, res) => {
+    res.sendFile(path.join(__dirname), 'public', 'js', 'intro.js');
+});
+
+app.get('/intro.css', (req, res) => {
+    res.sendFile(path.join(__dirname), 'public', 'css', 'intro.css');
+});
+
 // app.get('/getImage', (req, res) => {
 //     connections.indexOf(socket).emit('giveImage');
 // });
 
-io.on('connection', (socket) => {
-    let beginPoint; //variables for
-    let endPoint;   //recieved points
-    let firstPoint;
-    let secondPoint;
+// io.on('connection', (socket) => {
+//     let beginPoint; //variables for
+//     let endPoint;   //recieved points
+//     let firstPoint;
+//     let secondPoint;
+//
+//     socket.emit('drawPoints', pathsArray);
+//     connections.push(socket);
+//     console.log('Connected: %s sockets connected', connections.length);
+//
+//     socket.on('disconnect', () => {
+//         connections.splice(connections.indexOf(socket), 1);
+//         console.log('Disconnected: %s sockets connected', connections.length);
+//     });
+//
+//     // socket.on('', (data) => {
+//     //     //генерируем событие и отправляем доступным клиентам
+//     //     io.sockets.emit('', data);
+//     // });
+//
+//
+//     socket.on('startPath', (data, sessionID) => {
+//         io.sockets.emit('startPath', data, sessionID);
+//         beginPoint = data;
+//         pointsArray.push(beginPoint);
+//         firstPoint = beginPoint;
+//         //  console.log('startPathEmitted')
+//     });
+//
+//     socket.on('continuePath', (data, sessionID) => {
+//         io.sockets.emit('continuePath', data, sessionID);
+//         endPoint = data;
+//         pointsArray.push(endPoint);
+//         createPath(firstPoint.x, firstPoint.y, endPoint.x, endPoint.y, firstPoint.color, firstPoint.width);
+//         firstPoint = endPoint;
+//         // console.log('continuePatch emitted')
+//     });
+//
+//     socket.on('endPath', (data, sessionID) => {
+//         io.sockets.emit('endPath', data, sessionID);
+//         //  console.log('endPatch emitted')
+//     });
+// });
 
-    socket.emit('drawPoints', pathsArray);
-    connections.push(socket);
-    console.log('Connected: %s sockets connected', connections.length);
-
-    socket.on('disconnect', () => {
-        connections.splice(connections.indexOf(socket), 1);
-        console.log('Disconnected: %s sockets connected', connections.length);
-    });
-
-    // socket.on('', (data) => {
-    //     //генерируем событие и отправляем доступным клиентам
-    //     io.sockets.emit('', data);
-    // });
-
-
-    socket.on('startPath', (data, sessionID) => {
-        io.sockets.emit('startPath', data, sessionID);
-        beginPoint = data;
-        pointsArray.push(beginPoint);
-        firstPoint = beginPoint;
-        //  console.log('startPathEmitted')
-    });
-
-    socket.on('continuePath', (data, sessionID) => {
-        io.sockets.emit('continuePath', data, sessionID);
-        endPoint = data;
-        pointsArray.push(endPoint);
-        createPath(firstPoint.x, firstPoint.y, endPoint.x, endPoint.y, firstPoint.color, firstPoint.width );
-        firstPoint = endPoint;
-        // console.log('continuePatch emitted')
-    });
-
-    socket.on('endPath', (data, sessionID) => {
-        io.sockets.emit('endPath', data, sessionID);
-        //  console.log('endPatch emitted')
-    });
-});
-
-function createPath(beginPointX, beginPointY, endPointX, endPointY, beginPointColor, beginPointWidth){
+function createPath(beginPointX, beginPointY, endPointX, endPointY, beginPointColor, beginPointWidth) {
     let newPath = new Path(beginPointX, beginPointY, endPointX, endPointY, beginPointColor, beginPointWidth);
     pathsArray.push(newPath);
 }
 
+
+
+//            ------------------ROOMS-------------------------
+let rooms = io.of('/rooms');
+
+rooms.on('connection', (socket) => {
+    let room = '';
+
+    socket.on('img_click', (data) => {
+        switch (data.room) {
+            case 1:
+                room = "room_1";
+                socket.join(room);
+                console.log('img_click emitted from room' +data.room);
+                socket.emit('joinRoom', {roomname: 1, location: "/painting"});
+
+
+                socket.on('connection', () =>{
+                    console.log('Connection Emitted');
+                    let beginPoint; //variables for
+                    let endPoint;   //recieved points
+                    let firstPoint;
+                    let secondPoint;
+
+                    rooms.to(room).emit('drawPoints', pathsArray);
+                    connections.push(socket);
+                    console.log('Connected: %s sockets connected', connections.length);
+
+                    socket.on('disconnect', () => {
+                        connections.splice(connections.indexOf(socket), 1);
+                        console.log('Disconnected: %s sockets connected', connections.length);
+                    });
+
+                    socket.on('', (data) => {
+                        //генерируем событие и отправляем доступным клиентам
+                        io.sockets.emit('', data);
+                    });
+
+
+                    socket.on('startPath', (data, sessionID) => {
+                        rooms.to(room).emit('startPath', data, sessionID);
+                        beginPoint = data;
+                        pointsArray.push(beginPoint);
+                        firstPoint = beginPoint;
+                        //  console.log('startPathEmitted')
+                    });
+
+                    socket.on('continuePath', (data, sessionID) => {
+                        rooms.to(room).emit('continuePath', data, sessionID);
+                        endPoint = data;
+                        pointsArray.push(endPoint);
+                        createPath(firstPoint.x, firstPoint.y, endPoint.x, endPoint.y, firstPoint.color, firstPoint.width);
+                        firstPoint = endPoint;
+                        // console.log('continuePatch emitted')
+                    });
+
+                    socket.on('endPath', (data, sessionID) => {
+                        rooms.to(room).emit('endPath', data, sessionID);
+                        //  console.log('endPatch emitted')
+                    });
+                });
+
+
+
+
+
+
+                break;
+            case 2:
+                room = "room_2";
+                socket.join(room);
+                console.log('img_click emitted from room' +data.room);
+                socket.emit('joinRoom', {roomname: 2, location: "/painting"});
+                break;
+            case 3:
+                room = "room_3";
+                socket.join(room);
+                console.log('img_click emitted from room' +data.room);
+                socket.emit('joinRoom', {roomname: 3, location: "/painting"});
+                break;
+            case 4:
+                room = "room_4";
+                socket.join(room);
+                console.log('img_click emitted from room' +data.room);
+                socket.emit('joinRoom', {roomname: 4, location: "/painting"});
+                break;
+            default:
+                console.log('Something wrong in room selecting'); //допилить ответ для клиента
+                break;
+
+        }
+
+
+    // socket.on('connection', () =>{
+    //     console.log('Connection Emitted');
+    //     let beginPoint; //variables for
+    //     let endPoint;   //recieved points
+    //     let firstPoint;
+    //     let secondPoint;
+    //
+    //     rooms.to(room).emit('drawPoints', pathsArray);
+    //     connections.push(socket);
+    //     console.log('Connected: %s sockets connected', connections.length);
+    //
+    //     socket.on('disconnect', () => {
+    //         connections.splice(connections.indexOf(socket), 1);
+    //         console.log('Disconnected: %s sockets connected', connections.length);
+    //     });
+    //
+    //     socket.on('', (data) => {
+    //         //генерируем событие и отправляем доступным клиентам
+    //         io.sockets.emit('', data);
+    //     });
+    //
+    //
+    //     socket.on('startPath', (data, sessionID) => {
+    //         rooms.to(room).emit('startPath', data, sessionID);
+    //         beginPoint = data;
+    //         pointsArray.push(beginPoint);
+    //         firstPoint = beginPoint;
+    //         //  console.log('startPathEmitted')
+    //     });
+    //
+    //     socket.on('continuePath', (data, sessionID) => {
+    //         rooms.to(room).emit('continuePath', data, sessionID);
+    //         endPoint = data;
+    //         pointsArray.push(endPoint);
+    //         createPath(firstPoint.x, firstPoint.y, endPoint.x, endPoint.y, firstPoint.color, firstPoint.width);
+    //         firstPoint = endPoint;
+    //         // console.log('continuePatch emitted')
+    //     });
+    //
+    //     socket.on('endPath', (data, sessionID) => {
+    //         rooms.to(room).emit('endPath', data, sessionID);
+    //         //  console.log('endPatch emitted')
+    //     });
+    // });
+
+
+    });
+
+});
+
+
+
 server.listen(port, () => {
     console.log('Server running on port ' + port);
 });
+
