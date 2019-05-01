@@ -1,8 +1,17 @@
 window.onload = () => {
     const canvas  = document.getElementById('paint-canvas');
     const context = canvas.getContext('2d');
-    const socket  = io.connect('127.0.0.1:80');
-    let sessionID = socket.io.engine.id;
+   // const socket  = io.connect('127.0.0.1:80');
+    const namespace = io('/namespace');
+    const roomname = getCookie('room');
+    console.log('Room number: '+roomname);
+
+
+    namespace.on('connect', (socket)=>{
+        namespace.emit('img_click', {room: +roomname});
+    });
+
+  let sessionID = namespace.io.engine.id;
 
 
     const paths   = [[], []];
@@ -32,15 +41,17 @@ window.onload = () => {
         }
     }
 
-    socket.on('connect', () => {
+    namespace.on('connect', () => {
         console.log('connected');
-        sessionID = socket.io.engine.id;
+       sessionID = namespace.io.engine.id;
         //    getImage();
         //   alert(sessionID);
     });
 
+    namespace.emit('painting', roomname);
+
     function emit(event, data) {
-        socket.emit(event, data, sessionID)
+        namespace.emit(event, data, sessionID)
     }
 
     function getImage() {
@@ -112,7 +123,7 @@ window.onload = () => {
     };
 
 
-    socket.on('startPath', function startPath(point, sessionID) {
+    namespace.on('startPath', function startPath(point, sessionID) {
         context.lineJoin = "round";
         context.beginPath();
         context.lineWidth   = point.width;
@@ -121,7 +132,7 @@ window.onload = () => {
         //  console.log('startPatch Emitted');
     });
 
-    socket.on('continuePath', function continuePath(point, sessionID) {
+    namespace.on('continuePath', function continuePath(point, sessionID) {
         context.lineTo(point.x, point.y);
         context.closePath();
         context.stroke();
@@ -129,11 +140,11 @@ window.onload = () => {
         // console.log('ContinuePatch Emitted');
     });
 
-    socket.on('endPath', function endPath(point, sessionID) {
+    namespace.on('endPath', function endPath(point, sessionID) {
         // console.log('endPatch Emitted');
     });
 
-    socket.on('drawPoints', function drawPoints(pointsArray) {
+    namespace.on('drawPoints', function drawPoints(pointsArray) {
         // console.log('DrawPoints emitted');
         // console.log(pointsArray);
 
@@ -151,5 +162,12 @@ window.onload = () => {
 
     });
 
+
+    function getCookie(name) {
+        var matches = document.cookie.match(new RegExp(
+            "(?:^|; )" + name.replace(/([\.$?*|{}\(\)\[\]\\\/\+^])/g, '\\$1') + "=([^;]*)"
+        ));
+        return matches ? decodeURIComponent(matches[1]) : undefined;
+    }
 
 };
