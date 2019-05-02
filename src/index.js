@@ -126,8 +126,18 @@ function createPath(roomname, beginPointX, beginPointY, endPointX, endPointY, be
 //            ------------------ROOMS-------------------------
 let namespace = io.of('/namespace');
 
+
+
+
+
+
 namespace.on('connection', (socket) => {
     let room = '';
+
+    socket.on('getImage', ()=>{
+        console.log('getImage Emitted');
+        namespace.emit('drawPreview', roomPathArray);
+    });
 
     socket.on('img_click', (data) => {
         switch (data.room) {

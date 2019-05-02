@@ -123,25 +123,38 @@ window.onload = () => {
     };
 
 
-    namespace.on('startPath', function startPath(point, sessionID) {
-        context.lineJoin = "round";
-        context.beginPath();
-        context.lineWidth   = point.width;
-        context.strokeStyle = point.color;
-        context.moveTo(point.x, point.y);
-        //  console.log('startPatch Emitted');
+    namespace.on('startPath', function startPath(point, MYsessionID) {
+        if(MYsessionID!=sessionID) {
+            const context1    = canvas.getContext('2d');
+            context1.lineJoin = "round";
+            context1.beginPath();
+            context1.lineWidth   = point.width;
+            context1.strokeStyle = point.color;
+            context1.moveTo(point.x, point.y);
+            //  console.log('startPatch Emitted');
+        }
     });
 
-    namespace.on('continuePath', function continuePath(point, sessionID) {
-        context.lineTo(point.x, point.y);
-        context.closePath();
-        context.stroke();
-        context.moveTo(point.x, point.y);
-        // console.log('ContinuePatch Emitted');
+    namespace.on('continuePath', function continuePath(point, MYsessionID) {
+        if(MYsessionID!=sessionID) {
+
+            const context1 = canvas.getContext('2d');
+            context1.lineTo(point.x, point.y);
+            context1.closePath();
+            context1.stroke();
+            context1.moveTo(point.x, point.y);
+            // console.log('ContinuePatch Emitted');
+        }
     });
 
-    namespace.on('endPath', function endPath(point, sessionID) {
-        // console.log('endPatch Emitted');
+    namespace.on('endPath', function endPath(point, MYsessionID) {
+        if(MYsessionID==sessionID) {
+
+            const context1 = canvas.getContext('2d');
+            // context1.lineTo(point.x, point.y);
+            context1.closePath();
+            // console.log('endPatch Emitted');
+        }
     });
 
     namespace.on('drawPoints', function drawPoints(pointsArray) {
