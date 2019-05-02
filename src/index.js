@@ -9,10 +9,10 @@ const path         = require('path');
 const port             = 80;
 const urlencodedParser = bodyParser.urlencoded({extended: false});
 
-const connections   = []; //users connections array
-const pathsArray    = []; //users drawed curves array
-const pointsArray   = []; //recieved points array;
-let roomPathArray = [[],[]];
+const connections = []; //users connections array
+const pathsArray  = []; //users drawed curves array
+const pointsArray = []; //recieved points array;
+let roomPathArray = [[], [], [], []];
 
 // roomPathArray[0].push(1, 2, 3, 4);
 // roomPathArray[1].push(8, 7, 9, 5);
@@ -119,7 +119,7 @@ app.get('/intro.css', (req, res) => {
 
 function createPath(roomname, beginPointX, beginPointY, endPointX, endPointY, beginPointColor, beginPointWidth) {
     let newPath = new Path(beginPointX, beginPointY, endPointX, endPointY, beginPointColor, beginPointWidth);
-    roomPathArray[roomname-1].push(newPath);
+    roomPathArray[roomname - 1].push(newPath);
 }
 
 
@@ -170,10 +170,10 @@ namespace.on('connection', (socket) => {
             let endPoint;   //recieved points
             let firstPoint;
             let secondPoint;
-            let localRoomPatchArray = ArrayDoubleToOne(roomname-1, roomPathArray);
+            let localRoomPatchArray = ArrayDoubleToOne(roomname - 1, roomPathArray);
 
             namespace.to(room).emit('drawPoints', localRoomPatchArray);
-          //  console.log(roomPathArray[1][2]);
+            //  console.log(roomPathArray[1][2]);
             connections.push(socket);
             console.log('Connected: %s sockets connected', connections.length);
 
@@ -216,12 +216,12 @@ namespace.on('connection', (socket) => {
 
 });
 
-function ArrayDoubleToOne (index, array) {
+function ArrayDoubleToOne(index, array) {
     let returnArray = [];
     for (let i = 0; i < array[index].length; i++) {
         returnArray[i] = array[index][i];
     }
-    console.log(returnArray);
+    // console.log(returnArray);
     return returnArray;
 }
 
