@@ -24,6 +24,7 @@ window.onload = () => {
     let x;
     let y;
     let painting = false;
+    let webPainting = false;
 
     class Point {
         constructor(x, y, color, width) {
@@ -125,6 +126,7 @@ window.onload = () => {
 
     namespace.on('startPath', function startPath(point, MYsessionID) {
         if(MYsessionID!=sessionID) {
+            webPainting = true;
             const context1    = canvas.getContext('2d');
             context1.lineJoin = "round";
             context1.beginPath();
@@ -137,19 +139,20 @@ window.onload = () => {
 
     namespace.on('continuePath', function continuePath(point, MYsessionID) {
         if(MYsessionID!=sessionID) {
-
-            const context1 = canvas.getContext('2d');
-            context1.lineTo(point.x, point.y);
-            context1.closePath();
-            context1.stroke();
-            context1.moveTo(point.x, point.y);
-            // console.log('ContinuePatch Emitted');
+            if (webPainting) {
+                const context1 = canvas.getContext('2d');
+                context1.lineTo(point.x, point.y);
+                context1.closePath();
+                context1.stroke();
+                context1.moveTo(point.x, point.y);
+                // console.log('ContinuePatch Emitted');
+            }
         }
     });
 
     namespace.on('endPath', function endPath(point, MYsessionID) {
-        if(MYsessionID==sessionID) {
-
+        if(MYsessionID!=sessionID) {
+            webPainting = false;
             const context1 = canvas.getContext('2d');
             // context1.lineTo(point.x, point.y);
             context1.closePath();
@@ -182,5 +185,10 @@ window.onload = () => {
         ));
         return matches ? decodeURIComponent(matches[1]) : undefined;
     }
+
+    //
+    $("body").css("display", "block");
+
+    $("body").fadeIn(1500);
 
 };

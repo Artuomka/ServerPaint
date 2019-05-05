@@ -2,9 +2,14 @@
 <html lang="en">
 <head>
     <meta charset="UTF-8">
-    <!--<link rel="stylesheet" href="/static/css/intro.css" type="text/css">-->
+    <link rel="stylesheet" href="https://stackpath.bootstrapcdn.com/bootstrap/4.3.1/css/bootstrap.min.css" integrity="sha384-ggOyR0iXCbMQv3Xipma34MD+dH/1fQ784/j6cY/iJTQUOhcWr7x9JvoRxT2MZw1T" crossorigin="anonymous">
 
-    <!--НЕ ЗАБЫТЬ ПОМЕНЯТЬ ССЫЛКИ НА СЕРВЕРНЫЕ-->
+    <script
+            src="https://code.jquery.com/jquery-3.4.1.js"
+            integrity="sha256-WpOohJOqMqqyKL9FccASB9O0KwACQJpFTUBLTYOVvVU="
+            crossorigin="anonymous">
+
+    </script>
     <script src="/socket.io/socket.io.js"></script>
     <script type="text/javascript" src="/static/js/intro.js"></script>
     <link rel="stylesheet" href="/static/css/intro.css" type="text/css">
@@ -15,39 +20,12 @@
     <h1>Welcome!</h1>
     <p>
     <h2>please select a room:</h2> </p>
-    <div class="wrapper-img">
-        <div class="line">
+    <!--<div class="img-container">-->
+        <div class="row" id="parentDiv">
 
-
-            <div>
-                <h3>Room 1 <p>&dArr;</p></h3>
-                <canvas id="canvas1" style="border:1px solid gray; cursor:pointer;"></canvas>
-            </div>
-
-            <div>
-               <h3>Room 2 <p>&dArr;</p></h3>
-                <canvas id="canvas2" style="border:1px solid gray; cursor:pointer;"></canvas>
-            </div>
-
-            <!--<img src="/static/img/room1.png" alt="ROOM 1" id="room1">-->
-            <!--<img src="/static/img/room2.png" alt="ROOM 2" id="room2">-->
         </div>
-
-        <div class="line">
-            <div>
-                <h3>Room 3 <p>&dArr;</p></h3>
-                <canvas id="canvas3" style="border:1px solid gray; cursor:pointer;"></canvas>
-            </div>
-
-            <div>
-                <h3>Room 4 <p>&dArr;</p></h3>
-                <canvas id="canvas4" style="border:1px solid gray; cursor:pointer;"></canvas>
-            </div>
-
-            <!--<img src="/static/img/room3.png" alt="ROOM 3" id="room3">-->
-            <!--<img src="/static/img/room4.png" alt="ROOM 4" id="room4">-->
-        </div>
-    </div>
+    <!--</div>-->
+    <a href="#" class="button9" id="btnAdd">ADD ROOM</a>
 </div>
 </body>
 </html>

@@ -12,7 +12,9 @@ const urlencodedParser = bodyParser.urlencoded({extended: false});
 const connections = []; //users connections array
 const pathsArray  = []; //users drawed curves array
 const pointsArray = []; //recieved points array;
-let roomPathArray = [[], [], [], []];
+let counter= 0;
+let roomPathArray = [[]];
+
 
 // roomPathArray[0].push(1, 2, 3, 4);
 // roomPathArray[1].push(8, 7, 9, 5);
@@ -64,79 +66,29 @@ app.get('/intro.css', (req, res) => {
     res.sendFile(path.join(__dirname), 'public', 'css', 'intro.css');
 });
 
-// app.get('/getImage', (req, res) => {
-//     connections.indexOf(socket).emit('giveImage');
-// });
-
-// io.on('connection', (socket) => {
-//     let beginPoint; //variables for
-//     let endPoint;   //recieved points
-//     let firstPoint;
-//     let secondPoint;
-//
-//     socket.emit('drawPoints', pathsArray);
-//     connections.push(socket);
-//     console.log('Connected: %s sockets connected', connections.length);
-//
-//     socket.on('disconnect', () => {
-//         connections.splice(connections.indexOf(socket), 1);
-//         console.log('Disconnected: %s sockets connected', connections.length);
-//     });
-//
-//     // socket.on('', (data) => {
-//     //     //генерируем событие и отправляем доступным клиентам
-//     //     io.sockets.emit('', data);
-//     // });
-//
-//
-//     socket.on('startPath', (data, sessionID) => {
-//         io.sockets.emit('startPath', data, sessionID);
-//         beginPoint = data;
-//         pointsArray.push(beginPoint);
-//         firstPoint = beginPoint;
-//         //  console.log('startPathEmitted')
-//     });
-//
-//     socket.on('continuePath', (data, sessionID) => {
-//         io.sockets.emit('continuePath', data, sessionID);
-//         endPoint = data;
-//         pointsArray.push(endPoint);
-//         createPath(firstPoint.x, firstPoint.y, endPoint.x, endPoint.y, firstPoint.color, firstPoint.width);
-//         firstPoint = endPoint;
-//         // console.log('continuePatch emitted')
-//     });
-//
-//     socket.on('endPath', (data, sessionID) => {
-//         io.sockets.emit('endPath', data, sessionID);
-//         //  console.log('endPatch emitted')
-//     });
-// });
-
-// function createPath(beginPointX, beginPointY, endPointX, endPointY, beginPointColor, beginPointWidth) {
-//     let newPath = new Path(beginPointX, beginPointY, endPointX, endPointY, beginPointColor, beginPointWidth);
-//     pathsArray.push(newPath);
-// }
-
 function createPath(roomname, beginPointX, beginPointY, endPointX, endPointY, beginPointColor, beginPointWidth) {
     let newPath = new Path(beginPointX, beginPointY, endPointX, endPointY, beginPointColor, beginPointWidth);
     roomPathArray[roomname - 1].push(newPath);
 }
 
-
 //            ------------------ROOMS-------------------------
 let namespace = io.of('/namespace');
-
-
-
-
-
 
 namespace.on('connection', (socket) => {
     let room = '';
 
-    socket.on('getImage', ()=>{
-        console.log('getImage Emitted');
+    socket.on('getImage', () => {
+        namespace.emit('setRooms', counter);
+        // console.log('getImage Emitted');
         namespace.emit('drawPreview', roomPathArray);
+
+    });
+
+    socket.on('createRoom', (divRoom) => {
+        console.log('createRoom Emitted');
+        roomPathArray.push([[]]);
+        counter++;
+        console.log('room count '+counter);
     });
 
     socket.on('img_click', (data) => {
@@ -169,9 +121,7 @@ namespace.on('connection', (socket) => {
                 console.log('Something wrong in room selecting'); //допилить ответ для клиента
                 break;
 
-
         }
-
 
         socket.on('painting', (roomname) => {
 
@@ -196,7 +146,6 @@ namespace.on('connection', (socket) => {
                 //генерируем событие и отправляем доступным клиентам
                 io.sockets.emit('', data);
             });
-
 
             socket.on('startPath', (data, sessionID) => {
                 namespace.to(room).emit('startPath', data, sessionID);
@@ -226,6 +175,7 @@ namespace.on('connection', (socket) => {
 
 });
 
+
 function ArrayDoubleToOne(index, array) {
     let returnArray = [];
     for (let i = 0; i < array[index].length; i++) {
@@ -234,7 +184,6 @@ function ArrayDoubleToOne(index, array) {
     // console.log(returnArray);
     return returnArray;
 }
-
 
 server.listen(port, () => {
     console.log('Server running on port ' + port);
