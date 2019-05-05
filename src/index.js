@@ -12,7 +12,7 @@ const urlencodedParser = bodyParser.urlencoded({extended: false});
 const connections = []; //users connections array
 const pathsArray  = []; //users drawed curves array
 const pointsArray = []; //recieved points array;
-let counter= 0;
+let counter       = 0;
 let roomPathArray = [[]];
 
 
@@ -88,39 +88,31 @@ namespace.on('connection', (socket) => {
         console.log('createRoom Emitted');
         roomPathArray.push([[]]);
         counter++;
-        console.log('room count '+counter);
+        console.log('room count ' + counter);
+        socket.emit('room_created');
     });
 
     socket.on('img_click', (data) => {
-        switch (data.room) {
-            case 1:
-                room = "room1";
+        for (let i = 1; i <= counter; i++) {
+            if (data.room == i) {
+                room = "room" + data.room;
                 socket.join(room);
                 console.log('img_click emitted from room' + data.room);
-                socket.emit('joinRoom', {roomname: 1, location: "/painting"});
+                socket.emit('joinRoom', {roomname: i, location: "/painting"});
                 break;
-            case 2:
-                room = "room2";
-                socket.join(room);
-                console.log('img_click emitted from room' + data.room);
-                socket.emit('joinRoom', {roomname: 2, location: "/painting"});
-                break;
-            case 3:
-                room = "room3";
-                socket.join(room);
-                console.log('img_click emitted from room' + data.room);
-                socket.emit('joinRoom', {roomname: 3, location: "/painting"});
-                break;
-            case 4:
-                room = "room4";
-                socket.join(room);
-                console.log('img_click emitted from room' + data.room);
-                socket.emit('joinRoom', {roomname: 4, location: "/painting"});
-                break;
-            default:
-                console.log('Something wrong in room selecting'); //допилить ответ для клиента
-                break;
+            }
+        }
+    });
 
+    socket.on('img_ready_paint', (data) => {
+        for (let i = 1; i <= counter; i++) {
+            if (data.room == i) {
+                room = "room" + data.room;
+                socket.join(room);
+                console.log('img_ready_paint emitted from room' + data.room);
+                // socket.emit('joinRoom', {roomname: i, location: "/painting"});
+                break;
+            }
         }
 
         socket.on('painting', (roomname) => {

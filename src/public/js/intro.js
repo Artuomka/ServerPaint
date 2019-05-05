@@ -18,19 +18,24 @@ window.onload = () => {
     });
 
     namespace.on('drawPreview', (data) => {
-        console.log('drawImage emitted');
-        getCanvasDivs();
+        console.log('drawPreview emitted');
+        //   getCanvasDivs();
         drawPreview(data);
     });
 
     namespace.on('setRooms', (divs) => {
         canvasDivs = [];
         for (let i = 0; i < divs; i++) {
+            clearBox();
             reloadCanvas();
-
         }
         getCanvasDivs();
         console.log('setRooms Emitted');
+    });
+
+    namespace.on('room_created', () => {
+        console.log('New room created');
+        location.reload();
     });
 
     function drawPreview(data) {
@@ -54,71 +59,9 @@ window.onload = () => {
 
     };
 
-
-    // images[0].onclick = () => {
-    //     console.log("image room 1 clicked");
-    //     let rooms = io('/namespace');
-    //     rooms.on('connect', () => {
-    //         rooms.emit('img_click', {room: 1});
-    //     });
-    //
-    //     rooms.on('joinRoom', (data) => {
-    //
-    //         document.cookie = "room=" + data.roomname;
-    //         alert('Room ' + data.roomname + ' joined');
-    //         newPage(data.location);
-    //         //   window.location.replace(data.location)
-    //         // location.assign(data.location);
-    //     });
-    //
-    // }
-
-    // images[1].onclick = () => {
-    //     console.log("image room 2 clicked");
-    //     let rooms = io('/namespace');
-    //     rooms.on('connect', () => {
-    //         rooms.emit('img_click', {room: 2});
-    //     });
-    //
-    //     rooms.on('joinRoom', (data) => {
-    //         document.cookie = "room=" + data.roomname;
-    //         alert('Room ' + data.roomname + ' joined');
-    //         newPage(data.location);
-    //     });
-    //
-    //
-    // }
-
-    // images[2].onclick = () => {
-    //     console.log("image room 3 clicked");
-    //     let rooms = io('/namespace');
-    //     rooms.on('connect', () => {
-    //         rooms.emit('img_click', {room: 3});
-    //     });
-    //
-    //     rooms.on('joinRoom', (data) => {
-    //         document.cookie = "room=" + data.roomname;
-    //         alert('Room ' + data.roomname + ' joined');
-    //         newPage(data.location);
-    //         location.assign(data.location);
-    //     });
-    // }
-
-    // images[3].onclick = () => {
-    //     console.log("image room 4 clicked");
-    //     let rooms = io('/namespace');
-    //     rooms.on('connect', () => {
-    //         rooms.emit('img_click', {room: 4});
-    //     });
-    //
-    //     rooms.on('joinRoom', (data) => {
-    //         document.cookie = "room=" + data.roomname;
-    //         alert('Room ' + data.roomname + ' joined');
-    //         newPage(data.location);
-    //         location.assign(data.location);
-    //     });
-    // }
-
+    function clearBox() {
+        document.getElementById("parentDiv").innerHTML = "";
+    }
 
     $("body").css("display", "none");
 
@@ -145,8 +88,9 @@ window.onload = () => {
     }
 
     function reloadCanvas() {
+
         let div        = document.createElement('div');
-        div.className = 'col';
+        div.className  = 'col';
         let roomNumber = canvasDivs.length + 1;
         div.innerHTML  = "<h3>Room " + roomNumber + "<p>&dArr;</p></h3>" +
             "<canvas id=\"canvas2\" style=\"border:1px solid gray; cursor:pointer;\"></canvas>";
@@ -181,7 +125,6 @@ window.onload = () => {
             });
         }
     }
-
 
 
 }

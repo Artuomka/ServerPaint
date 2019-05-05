@@ -1,17 +1,17 @@
 window.onload = () => {
-    const canvas  = document.getElementById('paint-canvas');
-    const context = canvas.getContext('2d');
-   // const socket  = io.connect('127.0.0.1:80');
+    const canvas    = document.getElementById('paint-canvas');
+    const context   = canvas.getContext('2d');
+    // const socket  = io.connect('127.0.0.1:80');
     const namespace = io('/namespace');
-    const roomname = getCookie('room');
-    console.log('Room number: '+roomname);
+    const roomname  = getCookie('room');
+    console.log('Room number: ' + roomname);
 
 
-    namespace.on('connect', (socket)=>{
-        namespace.emit('img_click', {room: +roomname});
+    namespace.on('connect', (socket) => {
+        namespace.emit('img_ready_paint', {room: +roomname});
     });
 
-  let sessionID = namespace.io.engine.id;
+    let sessionID = namespace.io.engine.id;
 
 
     const paths   = [[], []];
@@ -23,7 +23,7 @@ window.onload = () => {
     console.log("Hello!");
     let x;
     let y;
-    let painting = false;
+    let painting    = false;
     let webPainting = false;
 
     class Point {
@@ -44,7 +44,7 @@ window.onload = () => {
 
     namespace.on('connect', () => {
         console.log('connected');
-       sessionID = namespace.io.engine.id;
+        sessionID = namespace.io.engine.id;
         //    getImage();
         //   alert(sessionID);
     });
@@ -125,8 +125,8 @@ window.onload = () => {
 
 
     namespace.on('startPath', function startPath(point, MYsessionID) {
-        if(MYsessionID!=sessionID) {
-            webPainting = true;
+        if (MYsessionID != sessionID) {
+            webPainting       = true;
             const context1    = canvas.getContext('2d');
             context1.lineJoin = "round";
             context1.beginPath();
@@ -138,7 +138,7 @@ window.onload = () => {
     });
 
     namespace.on('continuePath', function continuePath(point, MYsessionID) {
-        if(MYsessionID!=sessionID) {
+        if (MYsessionID != sessionID) {
             if (webPainting) {
                 const context1 = canvas.getContext('2d');
                 context1.lineTo(point.x, point.y);
@@ -151,8 +151,8 @@ window.onload = () => {
     });
 
     namespace.on('endPath', function endPath(point, MYsessionID) {
-        if(MYsessionID!=sessionID) {
-            webPainting = false;
+        if (MYsessionID != sessionID) {
+            webPainting    = false;
             const context1 = canvas.getContext('2d');
             // context1.lineTo(point.x, point.y);
             context1.closePath();
@@ -173,7 +173,7 @@ window.onload = () => {
             context.lineTo(pointsArray[i].endPointX, pointsArray[i].endPointY);
             context.closePath();
             context.stroke();
-     //       context.moveTo(pointsArray[i].endPointX, pointsArray[i].endPointY);
+            //       context.moveTo(pointsArray[i].endPointX, pointsArray[i].endPointY);
         }
 
     });
