@@ -1,6 +1,11 @@
+// noinspection JSAnnotator
 window.onload = () => {
     const canvas    = document.getElementById('paint-canvas');
+    const btnPaint = document.getElementById('btnPaint');
+
+
     const context   = canvas.getContext('2d');
+
     // const socket  = io.connect('127.0.0.1:80');
     const namespace = io('/namespace');
     const roomname  = getCookie('room');
@@ -127,7 +132,8 @@ window.onload = () => {
     namespace.on('startPath', function startPath(point, MYsessionID) {
         if (MYsessionID != sessionID) {
             webPainting       = true;
-            const context1    = canvas.getContext('2d');
+            const canvas1    = document.getElementById('paint-canvas');
+            const context1    = canvas1.getContext('2d');
             context1.lineJoin = "round";
             context1.beginPath();
             context1.lineWidth   = point.width;
@@ -140,7 +146,8 @@ window.onload = () => {
     namespace.on('continuePath', function continuePath(point, MYsessionID) {
         if (MYsessionID != sessionID) {
             if (webPainting) {
-                const context1 = canvas.getContext('2d');
+                const canvas1    = document.getElementById('paint-canvas');
+                const context1 = canvas1.getContext('2d');
                 context1.lineTo(point.x, point.y);
                 context1.closePath();
                 context1.stroke();
@@ -153,7 +160,8 @@ window.onload = () => {
     namespace.on('endPath', function endPath(point, MYsessionID) {
         if (MYsessionID != sessionID) {
             webPainting    = false;
-            const context1 = canvas.getContext('2d');
+            const canvas1    = document.getElementById('paint-canvas');
+            const context1 = canvas1.getContext('2d');
             // context1.lineTo(point.x, point.y);
             context1.closePath();
             // console.log('endPatch Emitted');
@@ -190,5 +198,19 @@ window.onload = () => {
     $("body").css("display", "block");
 
     $("body").fadeIn(1500);
+
+    btnPaint.addEventListener('click', (ev)=> {
+        let widthLine = document.getElementById("brush_width").value;
+        let colorLine = document.getElementById("color_selector").value;
+        const x1 = document.getElementById('x1').value;
+        const x2 = document.getElementById('x2').value;
+        const y1 = document.getElementById('y1').value;
+        const y2 = document.getElementById('y2').value;
+
+        const figure = new Painter(x1, y1, x2, y2, colorLine, widthLine);
+
+        figure.paint();
+
+    });
 
 };

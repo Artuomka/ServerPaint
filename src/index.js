@@ -11,7 +11,7 @@ const urlencodedParser = bodyParser.urlencoded({extended: false});
 
 const connections = []; //users connections array
 const pathsArray  = []; //users drawed curves array
-const pointsArray = []; //recieved points array;
+const pointsArray = []; //recieve points array;
 let counter       = 0;
 let roomPathArray = [[]];
 

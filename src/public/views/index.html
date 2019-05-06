@@ -9,13 +9,22 @@
 
     </script>
     <script src="/socket.io/socket.io.js"></script>
+    <script type="text/javascript" src="/static/js/Painter.js"></script>
     <script type="text/javascript" src="/static/js/client.js"></script>
     <link rel="stylesheet" href="/static/css/client.css" type="text/css">
 
     <title>Artuomka Paint</title>
 </head>
 <body>
+
 <div class="center">
+    <div>
+        <input class="xy" type="text" id="x1" style="width: 75px">
+        <input class="xy" type="text" id="x2">
+        <input class="xy" type="text" id="y1">
+        <input class="xy" type="text" id="y2">
+        <input class="xy" type="button" id="btnPaint" value="PAINT">
+    </div>
 
     <label>
         <input type="color" id="color_selector">

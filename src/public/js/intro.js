@@ -118,7 +118,7 @@ window.onload = () => {
                 });
                 rooms.on('joinRoom', (data) => {
                     document.cookie = "room=" + data.roomname;
-                    alert('Room ' + data.roomname + ' joined');
+                    // alert('Room ' + data.roomname + ' joined');
                     newPage(data.location);
                 });
 
