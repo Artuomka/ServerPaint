@@ -1,12 +1,12 @@
 class Painter {
-    constructor(beginPointX = 10, beginPointY = 20, endPointX = 100, endPointY = 200, color = 'black', width = 5, type = 'curve') {
+    constructor(beginPointX, beginPointY, endPointX, endPointY, color, width) {
         this.beginPointX = beginPointX;
         this.beginPointY = beginPointY;
         this.endPointX   = endPointX;
         this.endPointY   = endPointY;
         this.color       = color;
         this.width       = width;
-        this.type        = type;
+        // this.type        = type;
     }
 
     paint() {
@@ -23,7 +23,8 @@ class Painter {
         context.lineTo(this.endPointX, this.endPointY);
         context.closePath();
         context.stroke();
-        console.log('x1= ' + this.beginPointX, 'y1= ' + this.beginPointY, 'x2= ' + this.endPointX, 'y2= ' + this.endPointX);
+       // console.log('x1= ' + this.beginPointX, 'y1= ' + this.beginPointY, 'x2= ' + this.endPointX, 'y2= ' + this.endPointX,
+       //     'color= ' +this.color, 'width= ' +this.width);
 
     }
 }

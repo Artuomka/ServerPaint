@@ -1,16 +1,25 @@
 // noinspection JSAnnotator
 window.onload = () => {
-    const canvas    = document.getElementById('paint-canvas');
+    const canvas   = document.getElementById('paint-canvas');
     const btnPaint = document.getElementById('btnPaint');
+    let point1;
+    let point2;
 
+    class Path {
+        constructor(beginPointX, beginPointY, endPointX, endPointY, color, width) {
+            this.beginPointX = beginPointX;
+            this.beginPointY = beginPointY;
+            this.endPointX   = endPointX;
+            this.endPointY   = endPointY;
+            this.color       = color;
+            this.width       = width;
+        }
+    }
 
     const context   = canvas.getContext('2d');
-
-    // const socket  = io.connect('127.0.0.1:80');
     const namespace = io('/namespace');
     const roomname  = getCookie('room');
     console.log('Room number: ' + roomname);
-
 
     namespace.on('connect', (socket) => {
         namespace.emit('img_ready_paint', {room: +roomname});
@@ -18,8 +27,6 @@ window.onload = () => {
 
     let sessionID = namespace.io.engine.id;
 
-
-    const paths   = [[], []];
     canvas.width  = canvas.clientWidth;
     canvas.height = canvas.clientHeight;
 
@@ -40,37 +47,27 @@ window.onload = () => {
         }
     }
 
-    class Path {
-        constructor(point, sessionID) {
-            this.point    = point;
-            this.essionID = sessionID;
-        }
-    }
-
     namespace.on('connect', () => {
         console.log('connected');
         sessionID = namespace.io.engine.id;
-        //    getImage();
-        //   alert(sessionID);
     });
 
     namespace.emit('painting', roomname);
 
-    function emit(event, data) {
-        namespace.emit(event, data, sessionID)
+    function emit(event, point, path) {
+        namespace.emit(event, point, path, sessionID)
     }
 
-    function getImage() {
-        let img;
-        let sender = new XMLHttpRequest();
-        sender.open('GET', 'getImage', true);
-        //sender.setRequestHeader('Content-Type', 'application/x-www-form-urlencoded');
-        sender.send();
-        img          = sender.responseText;
-        img          = atob(img);
-        let newImage = new Image(img);
-        context.drawImage(newImage, 0, 0);
-    }
+    // function getImage() {
+    //     let img;
+    //     let sender = new XMLHttpRequest();
+    //     sender.open('GET', 'getImage', true);
+    //     sender.send();
+    //     img          = sender.responseText;
+    //     img          = atob(img);
+    //     let newImage = new Image(img);
+    //     context.drawImage(newImage, 0, 0);
+    // }
 
     canvas.onmousedown = (e) => {
         context.beginPath();
@@ -87,7 +84,7 @@ window.onload = () => {
         x                   = e.offsetX;
         y                   = e.offsetY;
         let newPoint        = new Point(x, y, colorLine, widthLine);
-        // startPath(newPoint, sessionID);
+        point1              = new Point(x, y, colorLine, widthLine);
         emit('startPath', newPoint);
 
     };
@@ -107,8 +104,10 @@ window.onload = () => {
             y = e.offsetY;
             context.moveTo(x, y);
             let newPoint = new Point(x, y, colorLine, widthLine);
-            //  continuePath(newPoint, sessionID);
-            emit('continuePath', newPoint);
+            point2       = new Point(x, y, colorLine, widthLine);
+            let newPatch = new Path(point1.x, point1.y, point2.x, point2.y, point1.color, point1.width);
+            point1       = point2;
+            emit('continuePath', newPoint, newPatch, sessionID);
         }
     };
 
@@ -131,28 +130,16 @@ window.onload = () => {
 
     namespace.on('startPath', function startPath(point, MYsessionID) {
         if (MYsessionID != sessionID) {
-            webPainting       = true;
-            const canvas1    = document.getElementById('paint-canvas');
-            const context1    = canvas1.getContext('2d');
-            context1.lineJoin = "round";
-            context1.beginPath();
-            context1.lineWidth   = point.width;
-            context1.strokeStyle = point.color;
-            context1.moveTo(point.x, point.y);
-            //  console.log('startPatch Emitted');
+            webPainting = true;
         }
     });
 
-    namespace.on('continuePath', function continuePath(point, MYsessionID) {
+    namespace.on('continuePath', function continuePath(point, path, MYsessionID) {
         if (MYsessionID != sessionID) {
             if (webPainting) {
-                const canvas1    = document.getElementById('paint-canvas');
-                const context1 = canvas1.getContext('2d');
-                context1.lineTo(point.x, point.y);
-                context1.closePath();
-                context1.stroke();
-                context1.moveTo(point.x, point.y);
-                // console.log('ContinuePatch Emitted');
+                let currentPainter = new Painter(path.beginPointX, path.beginPointY, path.endPointX,
+                    path.endPointY, path.color, path.width);
+                currentPainter.paint();
             }
         }
     });
@@ -160,17 +147,13 @@ window.onload = () => {
     namespace.on('endPath', function endPath(point, MYsessionID) {
         if (MYsessionID != sessionID) {
             webPainting    = false;
-            const canvas1    = document.getElementById('paint-canvas');
+            const canvas1  = document.getElementById('paint-canvas');
             const context1 = canvas1.getContext('2d');
-            // context1.lineTo(point.x, point.y);
             context1.closePath();
-            // console.log('endPatch Emitted');
         }
     });
 
     namespace.on('drawPoints', function drawPoints(pointsArray) {
-        // console.log('DrawPoints emitted');
-        // console.log(pointsArray);
 
         for (let i = 0; i < pointsArray.length; i++) {
             context.lineJoin = "round";
@@ -181,7 +164,6 @@ window.onload = () => {
             context.lineTo(pointsArray[i].endPointX, pointsArray[i].endPointY);
             context.closePath();
             context.stroke();
-            //       context.moveTo(pointsArray[i].endPointX, pointsArray[i].endPointY);
         }
 
     });
@@ -199,16 +181,14 @@ window.onload = () => {
 
     $("body").fadeIn(1500);
 
-    btnPaint.addEventListener('click', (ev)=> {
+    btnPaint.addEventListener('click', (ev) => {
         let widthLine = document.getElementById("brush_width").value;
         let colorLine = document.getElementById("color_selector").value;
-        const x1 = document.getElementById('x1').value;
-        const x2 = document.getElementById('x2').value;
-        const y1 = document.getElementById('y1').value;
-        const y2 = document.getElementById('y2').value;
-
-        const figure = new Painter(x1, y1, x2, y2, colorLine, widthLine);
-
+        const x1      = document.getElementById('x1').value;
+        const x2      = document.getElementById('x2').value;
+        const y1      = document.getElementById('y1').value;
+        const y2      = document.getElementById('y2').value;
+        const figure  = new Painter(x1, y1, x2, y2, colorLine, widthLine);
         figure.paint();
 
     });

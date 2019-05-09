@@ -1,8 +1,4 @@
 window.onload = () => {
-    //  let images = document.getElementsByTagName('img');
-    //   const canvas  = document.getElementById('canvas1');
-    //   const context = canvas.getContext('2d');
-    //  const images     = document.getElementsByTagName('canvas');
     let canvasDivs = [];
     const btnAdd   = document.getElementById('btnAdd');
 
@@ -35,7 +31,7 @@ window.onload = () => {
 
     namespace.on('room_created', () => {
         console.log('New room created');
-        location.reload();
+        location.reload(false);
     });
 
     function drawPreview(data) {
@@ -52,7 +48,6 @@ window.onload = () => {
                 context.lineTo(data[i][j].endPointX * 0.45, data[i][j].endPointY * 0.3);
                 context.closePath();
                 context.stroke();
-                //       context.moveTo(pointsArray[i].endPointX, pointsArray[i].endPointY);
             }
 
         }
